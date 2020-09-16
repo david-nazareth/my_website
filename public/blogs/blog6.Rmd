@@ -116,9 +116,6 @@ ggplot(gdp_time, aes(x=year, y=value, color= IndicatorName)) +
 ```
 
 
-
-
-
 Next, I will calculate GDP for all countries in our dataset by adding up the components of GDP i.e personal consumption, business investment, government spending and net exports. To calculate net exports I first have to reshape the data to wide format and create a new column `net_exports` which will be equal to the exports minus the imports. 
 
 ```{r, pivot_wider}

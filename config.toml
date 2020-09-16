@@ -43,13 +43,13 @@ disqusShortname = ""
     # Optional logo as brand stored in img/
     # logo = "logo.png"
 
-    [[params.navigation.links]]
-      name = "Home"
-      url = "#"
+    #[[params.navigation.links]]
+      #name = "Home"
+      #url = "#"
 
-    [[params.navigation.links]]
-      name = "Blogs"
-      url = "blogs"
+    #[[params.navigation.links]]
+      #name = "Blogs"
+      #url = "blogs"
 
     #[[params.navigation.links]]
     #name = "Generic Blog"
@@ -82,7 +82,7 @@ disqusShortname = ""
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
     title = "Hi, I'm David Nazareth"
-    subtitle = "I want to use data analytics to help build smarter energy grids."
+    subtitle = "I'm interested in the using data analytics to build smarter energy grids. Have a look at some of my recent projects in R"
     buttonText = "Get Started"
 
 
