@@ -4,11 +4,11 @@ description: How have GDP components changed over time?
 draft: false
 keywords: ""
 slug: blog2
-title: "GDP Components""
+title: "GDP Components"
 ---
 
 
-```{r, setup, echo=FALSE}
+```{r, setup, include=FALSE}
 knitr::opts_chunk$set(
   message = FALSE, 
   warning = FALSE, 

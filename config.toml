@@ -36,7 +36,7 @@ disqusShortname = ""
     #text = "Please visit [this page](/)"
 
   # Navigation Section
-  [params.navigation]
+  #[params.navigation]
     #title = "Forty"
     #subtitle = "By HTML5 Up"
     #menu = "Menu"
@@ -104,7 +104,7 @@ disqusShortname = ""
       url = "blogs/blog1"
       
     [[params.tiles.showcase]]
-      title = "COVID-19 death rate"
+      title = "COVID-19 Death Rate"
       subtitle = "Visualising death rate from CDC Case Surveillance Data"
       image = "pic03.png"
       url = "blogs/blog3"
@@ -148,7 +148,7 @@ disqusShortname = ""
     # - send a dummy email yourself to confirm your account
     # - click the confirm link in the email from www.formspree.io
     # - you're done. Happy mailing!
-    # formEmail = "example@domain.com"
+    formEmail = "dnazareth.mam2021@london.edu"
 
     # Contact Section
     # You can add multiple emails, phone numbers, or addresses
