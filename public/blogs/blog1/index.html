@@ -1,0 +1,260 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Your description">
+	<meta name="author" content="David Nazareth">
+	<meta name="generator" content="Hugo 0.74.3" />
+	<title>TfL Rentals &middot; David Nazareth</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong></strong> <span></span></a>
+        <nav>
+            <a href="#menu"></a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>TfL Rentals</h1>
+                            </header>
+                            
+                            
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>The London data store (<a href="https://data.london.gov.uk/dataset/number-bicycle-hires" class="uri">https://data.london.gov.uk/dataset/number-bicycle-hires</a>) provides us with data on the total number of Santander cycles hired by day, month and year since the scheme started on 30th July 2010. We can access the latest data from the site and store it in a temporary excel file. We will then clean the column names using clean_names() from the janitor package and extract the year, month and day from the day column using functions from the lubridate package.</p>
+<pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-08-26T09%3A19%3A21/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20200913%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200913T135523Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=af95fbaf4e2bd0ae71f0e912539f813a3f7c92ca27b68f68d9e9db236c5fcdd3&amp;X-Amz-SignedHeaders=host]
+##   Date: 2020-09-13 13:55
+##   Status: 200
+##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+##   Size: 164 kB
+## &lt;ON DISK&gt;  /tmp/RtmpzkwMMB/file3b0966cc65f0.xlsx</code></pre>
+<pre class="r"><code># Use read_excel to read it as dataframe
+bike0 &lt;- read_excel(bike.temp,
+                   sheet = &quot;Data&quot;,
+                   range = cell_cols(&quot;A:B&quot;))
+
+# change dates to get year, month, and week
+bike &lt;- bike0 %&gt;% 
+  clean_names() %&gt;% 
+  rename (bikes_hired = number_of_bicycle_hires) %&gt;% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))</code></pre>
+<p>Next I will create a facet grid plot to visualize the distribution of bike rentals each month between 2015 and 2020.</p>
+<pre class="r"><code>bike_size &lt;- function(n) {
+  #if the number of bike rentals&gt; 1000 change to 1k for a more cleaner visualization
+  labels &lt;- ifelse(n &gt;1e3, paste0(round(n/1e3), &#39;k&#39;)) 
+  
+  return(labels)
+}
+
+
+bike %&gt;% 
+  filter(year %in% c(&quot;2015&quot;,&quot;2016&quot;,&quot;2017&quot;,&quot;2018&quot;,&quot;2019&quot;,&quot;2020&quot;)) %&gt;% 
+  ggplot(aes(x= bikes_hired))+
+  geom_density()+
+  facet_grid(rows= vars(year), cols= vars(month))+
+  theme_fivethirtyeight()+ #adding theme fivethirtyeight
+  scale_x_continuous(labels = bike_size)+
+  labs(
+    title=&quot;Distribution of Santander bikes hired per month&quot;
+  )+
+  theme(
+    axis.text.y = element_blank()
+  )</code></pre>
+<p><img src="/blogs/blog1_files/figure-html/fig1-1.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>The distribution of bike rentals for May and June 2020 appears to be more spread out when compared to previous years. This higher standard deviation in bike rentals in summar 2020 is as a result of the COVID-19 lockdown which changed the movement patterns of people in the city compared with previous years. People now use bikes rather than public transport for both essential travel and leisure.This explains some of the days in May and June that saw a high number of bikes being rented. However the lockdown has also caused bike rentals to be adversely affected on certain days with people having to work from home rather than office and not moving about as much.</p>
+<p>In order to understand how monthly bike rentals varied during the COVID-19 lockdown compared with the average rentals since 2015, I have created a visualization with the monthly average shown in blue and the actual number of rentals in black. I used the geom_ribbon function to colour the band between the two lines red, if actual rentals is lower than expected rentals and green if actual rentals is above expected rentals.</p>
+<pre class="r"><code>#calculating actual and expected monthly averages for bike rentals
+actual_monthly_avg&lt;-bike %&gt;%
+  filter(year %in% c(&quot;2015&quot;,&quot;2016&quot;,&quot;2017&quot;,&quot;2018&quot;,&quot;2019&quot;,&quot;2020&quot;)) %&gt;% 
+  group_by(month,year) %&gt;% 
+  summarise(actual_rentals=median(bikes_hired))
+
+expected_monthly_avg&lt;-actual_monthly_avg %&gt;%
+  filter(year!=&quot;2020&quot;) %&gt;% 
+  group_by(month) %&gt;% 
+  # used the median to account for the presence of outliers
+  summarise(expected_rentals=median(actual_rentals))
+
+
+
+monthly_average&lt;-left_join(actual_monthly_avg,expected_monthly_avg,&quot;month&quot;,&quot;year&quot;) %&gt;% 
+  #difference in actual and expected rentals
+  mutate(diff_rentals = actual_rentals - expected_rentals, 
+         # if the difference is positive add to expected rentals
+         diff_rentals_pos = ifelse(diff_rentals&gt;0, diff_rentals+expected_rentals, expected_rentals),
+         # if the difference is negative subtract from expected rentals
+         diff_rentals_neg = ifelse(diff_rentals&lt;0, diff_rentals+expected_rentals, expected_rentals))
+
+
+
+ggplot(data=monthly_average, aes(x=month))+
+  #plotting two lines, blue for expected and black for actual rentals
+  geom_line(aes(y=actual_rentals, group = 1), color= &quot;black&quot;,size=0.6) +
+  geom_line(aes(y=expected_rentals, group = 1), color= &quot;blue&quot;, size=1) +
+  #adding two geom ribbons with color, green for positive diff and red for negative diff
+  
+  #adding green ribbon between expected rentals and expected+excess rentals
+  geom_ribbon(aes(ymin = expected_rentals, ymax = diff_rentals_pos, group = 1), fill = &quot;#a1d99b&quot;, alpha = 0.2) + 
+  #adding red ribbon between expected rentals and expected-excess rentals
+  geom_ribbon(aes(ymin = expected_rentals, ymax =diff_rentals_neg, group = 1), fill = &quot;#a50f15&quot;, alpha = 0.2) +
+  facet_wrap(~year)+ #faceting by year
+  theme_minimal()+ #adding theme minimal
+  labs (
+    title = &quot;Monthly changes in TfL bike rentals&quot;,
+    subtitle= &quot;Change in monthly average shown in blue \nand calculated between 2015-2019&quot;,
+    caption=&quot;Source: TfL, London Data Store&quot;,
+    y= &quot;Bike rentals&quot;
+  )+
+  theme(
+    axis.title.x=element_blank(), #removing x-axis label and legend 
+    legend.position=&quot;none&quot;
+  )</code></pre>
+<p><img src="/blogs/blog1_files/figure-html/weekly%20changes%20in%20TFL%20bike%20rentals,%20fig2-1.png" width="1248" style="display: block; margin: auto;" /></p>
+<p>One can clearly see a drastic decrease in the number of bikes hired from early February, 2020 onwards uptill the beginning of May. From then on, bike rentals have been slightly above the monthly average possibly due to people using them for leisure and as a safer alternative to public transport.</p>
+<pre class="r"><code>#calculating expected weekly averages for bike rentals
+weekly_avg &lt;- bike %&gt;% 
+  filter(year %in% c(&quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;)) %&gt;% 
+  group_by(year, week) %&gt;% 
+  summarise(sum_rentals_period= sum(bikes_hired)) %&gt;% 
+  group_by(week) %&gt;% 
+  summarise(expected_rentals= median(sum_rentals_period))
+
+
+#actual weekly rentals 
+weekly_changes &lt;- bike %&gt;% 
+  filter(year %in% c(&quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;)) %&gt;% 
+  group_by(year, week) %&gt;% 
+  summarise(actual_rentals= sum(bikes_hired)) %&gt;% 
+  left_join(weekly_avg, by=&quot;week&quot;) %&gt;% 
+  # % difference in actual and expected rentals
+  mutate(diff_rentals= (actual_rentals- expected_rentals)/expected_rentals,
+         # if the % difference is positive assign value to pos_percent
+         pos_percent = ifelse(actual_rentals&gt;expected_rentals, diff_rentals, 0),
+         # if the % difference is negative assign value to neg_percent
+         neg_percent = ifelse(actual_rentals&lt;expected_rentals, diff_rentals, 0)
+  )
+
+ggplot(weekly_changes)+
+  #creating the grey tiles in plot background
+  geom_rect(aes(xmin = 13, xmax = 26, ymin = -Inf, ymax = Inf),
+            fill = &quot;gray90&quot;, alpha = 0.002)+
+  geom_rect(aes(xmin = 39, xmax = 53, ymin = -Inf, ymax = Inf),
+            fill = &quot;gray90&quot;, alpha = 0.002)+
+  #adding two geom ribbons with color, green for positive diff and red for negative diff
+  geom_ribbon(aes(x= week, ymin=0,ymax=pos_percent),fill=&quot;#a1d99b&quot;,alpha=0.4)  +
+  geom_ribbon(aes(x= week, ymin=0,ymax=neg_percent),fill=&quot;#a50f15&quot;,alpha=0.4)+
+  geom_line(aes(x= week, y = diff_rentals, alpha=0.3))+
+  #creating the rug
+  geom_rug(data = . %&gt;%  filter(diff_rentals&gt; 0),
+           mapping=aes(x=week, y= diff_rentals), color= &quot;#a1d99b&quot;, sides=&quot;b&quot;)+
+  geom_rug(data = . %&gt;%  filter(diff_rentals&lt; 0),
+           mapping=aes(x=week, y= diff_rentals), color= &quot;#a50f15&quot;, sides=&quot;b&quot;)+
+  facet_wrap(~year)+
+  theme_minimal()+
+  labs (
+    title = &quot;Weekly changes in TfL bike rentals&quot;,
+    subtitle= &quot;% change from weekly averages\n calculated between 2015-2019&quot;,
+    caption=&quot;Source: TfL, London Data Store&quot;
+  )+
+  theme(
+    axis.title.y=element_blank(),
+    legend.position=&quot;none&quot;
+  )+
+  scale_y_continuous(labels = scales::percent)+
+  #defining ticks on x-axis
+  scale_x_continuous(breaks=c(13,26,39,53))+ #setting x-axis breaks
+  scale_fill_manual(values=c(&quot;#a1d99b&quot;, &quot;#bd0026&quot;), name=&quot;fill&quot;)</code></pre>
+<p><img src="/blogs/blog1_files/figure-html/weekly%20changes%20in%20TFL%20bike%20rentals,%20fig3-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>We used the median rather than the mean to calculate expected rentals since the median is less affected by the presence of outliers i.e days with a very high or very low number of bikes rented.</p>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>
