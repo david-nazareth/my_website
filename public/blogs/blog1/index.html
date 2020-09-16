@@ -72,6 +72,7 @@
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
+<p>The pandemic has impacted how people move in many of the world’s largest cities. People are working and studying from home and do not move about as much as they used to. The usage of public transport has gone down drastically as the public explore safer options to move about like personal vehicles and cycles. In this analysis, I will attempt to explore how the pandemic has affected the monthly and weekly rentals of Santander cycles in London by comparing it with the expected monthly rentals calculated using data on bike rentals over the last 5 years.</p>
 <p>The London data store (<a href="https://data.london.gov.uk/dataset/number-bicycle-hires" class="uri">https://data.london.gov.uk/dataset/number-bicycle-hires</a>) provides us with data on the total number of Santander cycles hired by day, month and year since the scheme started on 30th July 2010. We can access the latest data from the site and store it in a temporary excel file. We will then clean the column names using clean_names() from the janitor package and extract the year, month and day from the day column using functions from the lubridate package.</p>
 <pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
 
@@ -222,7 +223,6 @@ ggplot(weekly_changes)+
   scale_x_continuous(breaks=c(13,26,39,53))+ #setting x-axis breaks
   scale_fill_manual(values=c(&quot;#a1d99b&quot;, &quot;#bd0026&quot;), name=&quot;fill&quot;)</code></pre>
 <p><img src="/blogs/blog1_files/figure-html/weekly%20changes%20in%20TFL%20bike%20rentals,%20fig3-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>We used the median rather than the mean to calculate expected rentals since the median is less affected by the presence of outliers i.e days with a very high or very low number of bikes rented.</p>
 
                         </div>
                     </section>
