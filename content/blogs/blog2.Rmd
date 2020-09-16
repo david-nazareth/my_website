@@ -4,7 +4,7 @@ description: How have GDP components changed over time?
 draft: false
 keywords: ""
 slug: blog2
-title: GDP Components
+title: "GDP Components""
 ---
 
 
