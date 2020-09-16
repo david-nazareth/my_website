@@ -1,9 +1,9 @@
 ---
-date: '2020-09-13'
+date: "2020-09-16"
 description: How have GDP components changed over time?
 draft: false
-keywords: ''
-slug: blog6
+keywords: ""
+slug: blog2
 title: GDP Components
 ---
 

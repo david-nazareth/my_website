@@ -22,10 +22,10 @@
     
     <item>
       <title>GDP Components</title>
-      <link>/blogs/blog6/</link>
-      <pubDate>Sun, 13 Sep 2020 00:00:00 +0000</pubDate>
+      <link>/blogs/blog2/</link>
+      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
-      <guid>/blogs/blog6/</guid>
+      <guid>/blogs/blog2/</guid>
       <description>The main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). You can read more about GDP and the different approaches in calculating at the Wikipedia GDP page.
 The GDP data we will look at is from the United Nations’ National Accounts Main Aggregates Database, which contains estimates of total GDP and its components for all countries from 1970 to today.</description>
     </item>
@@ -33,7 +33,7 @@ The GDP data we will look at is from the United Nations’ National Accounts Mai
     <item>
       <title>TfL Bike Rentals</title>
       <link>/blogs/blog1/</link>
-      <pubDate>Sun, 13 Sep 2020 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/blogs/blog1/</guid>
       <description>The pandemic has impacted how people move in many of the world’s largest cities. People are working and studying from home and do not move about as much as they used to. The usage of public transport has gone down drastically as the public explore safer options to move about like personal vehicles and cycles. In this analysis, I will attempt to explore how the pandemic has affected the monthly and weekly rentals of Santander cycles in London by comparing it with the expected monthly rentals calculated using data on bike rentals over the last 5 years.</description>

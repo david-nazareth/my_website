@@ -95,7 +95,7 @@ disqusShortname = ""
       title = "GDP Components"
       subtitle = "How have GDP components changed over time?"
       image = "pic01.png"
-      url = "blogs/blog6"
+      url = "blogs/blog2"
 
     [[params.tiles.showcase]]
       title = "TfL Bike Rentals"
