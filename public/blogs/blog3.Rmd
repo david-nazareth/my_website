@@ -1,0 +1,150 @@
+---
+title: "COVID-19 Death Rate"
+description: Visualising death rate from CDC Case Surveillance Data
+date: '2020-09-16'
+keywords: ''
+slug: blog3
+draft: no
+---
+
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+```
+
+I will now attempt to visualise the death rate of patients from different age groups and genders based on whether they had pre-existing medical conditions or not and on whether they were admitted into the ICU or not. The CDC Covid-19 Case Surveillance Data(https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf) has de-identified patient data on cases recorded in the United States. There are well over 3 million records so I will use the `vroom` package to load it. The columns of interest in the dataset are:
+
+`sex`: sex of the patient
+
+`age group`: The age group that the patient belongs to (groups of 10)
+
+`icu_yn`: whether the patient was admitted to the ICU or not (Yes/No)
+
+`medcond_yn`: whether the patient had a medical condition prior to being admitted (Yes/No)
+
+`death_yn`: whether the patient died or not (Yes/No)
+
+```{r, cache=TRUE}
+# URL link to CDC to download data
+url <- "https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD"
+
+#using the vroom package to load the data and the janitor package to clean column names
+covid_data <- vroom(url)%>% 
+  clean_names()
+
+
+```
+I will now produce a plot of Covid-19 death rate % grouped by age group, sex, and whether the patient had co-morbidities or not. In order to do this, I first have to clean the variables `medcond_yn`, `death_yn`, `sex` and `age_group` since all of them contain NA values. In some cases the missing values are stored in character form using the words *Other*, *Missing* or *Unknown* so I will also have to clean these values from the dataset.  I have named the cleaned dataset `death_rate_medcond` and will use it to create the visualisation. 
+
+```{r, covid_death_rate1, fig1, fig.width = 12, fig.height=7}
+#storing names of missing values in a vector
+val_to_remove=c("Missing", "Unknown", "Other", NA)
+
+death_rate_medcond <- covid_data %>% 
+  select(medcond_yn, death_yn, sex, age_group) %>% 
+  #removing missing and unknown values from the variables of interest
+  filter(!(death_yn %in% val_to_remove) ,
+         !(medcond_yn %in% val_to_remove), 
+         !(sex %in% val_to_remove),
+         !(age_group %in% val_to_remove)
+  ) %>%
+  #assigning more meaningful names to variable medcond_yn
+  mutate(death_bool = ifelse(death_yn=="Yes", 1, 0), 
+         co_mor= ifelse(medcond_yn=="Yes", "With comorbidities", "Without comorbidities")) %>% 
+  group_by(age_group, sex, co_mor) %>% 
+  #calculating death rate
+  summarise(death_r = prop(death_bool))
+
+ggplot(death_rate_medcond, aes(x=death_r, y=age_group)) +
+  geom_col(fill="#1b5596", alpha=0.6) +
+  #faceting by sex and presence of co-morbidities
+  facet_grid(rows= vars(co_mor), cols= vars(sex))+
+  scale_x_continuous(labels = scales::percent)+
+  theme_bw()+
+  #adding text to show the death rate % next to the bars on the graph
+  geom_text(aes(label=round(death_r*100, 2)), position=position_dodge(width=0.8), hjust=-0.05, size=3)+
+  labs (
+    title = "Covid death % by age group, sex and presence of comorbidities",
+    caption="Source: CDC"
+  )+
+  theme(
+    axis.title.x=element_blank(), #removing x and y axis labels
+    axis.title.y=element_blank()
+  )
+
+
+
+```
+
+From the graph above we can see that men above the age of 80 with comorbidities have the highest death rate (67.2%). The death rate for men appears to be higher in most age groups regardless of whether they have a pre-exisiting medical condition or not. Moreover, we can clearly see that COVID-19 has caused a higher death rate in patients with comorbidities than in those with no pre-exisiting medical condition, both among men and women. 
+
+
+Next, I will now produce a plot of Covid-19 death rate % grouped by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not. I will now produce a new cleaned dataset `death_rate_icu` and use it to create the visualisation. 
+
+```{r, covid_death_rate2, fig2, fig.width = 12, fig.height=7}
+
+
+death_rate_icu <- covid_data %>% 
+  select(icu_yn, death_yn, sex, age_group) %>% 
+  #removing missing and unknown values from the variables of interest
+  filter(!(death_yn %in% val_to_remove) ,
+         !(icu_yn %in% val_to_remove), 
+         !(sex %in% val_to_remove),
+         !(age_group %in% val_to_remove)
+  ) %>%
+  #assigning more meaningful names to variable icu_yn
+  mutate(death_bool = ifelse(death_yn=="Yes", 1, 0), 
+         icu= ifelse(icu_yn=="Yes", "Admitted to ICU", "No ICU")) %>% 
+  group_by(age_group, sex, icu) %>% 
+  #calculating death rate
+  summarise(death_rate = prop(death_bool))
+
+ggplot(death_rate_icu, aes(x=death_rate, y=age_group)) +
+  geom_col(fill="#f2695c", alpha=0.7) +
+  #faceting by sex and whether patient was admitted to the ICU
+  facet_grid(rows= vars(icu), cols= vars(sex))+
+  scale_x_continuous(labels = scales::percent)+
+  theme_bw()+
+  #adding text to show the death rate % next to the bars on the graph
+  geom_text(aes(label=round(death_rate*100, 2)), position=position_dodge(width=0.8), hjust=-0.05, size=2)+
+  labs (
+    title = "Covid death % by age group, sex and whether patient was admitted to ICU",
+    caption="Source: CDC"
+  )+
+  theme(
+    axis.title.x=element_blank(),#removing x and y axis labels
+    axis.title.y=element_blank()
+  )
+
+
+
+```
+
+The death rate for patients admitted into the ICU is much higher than for those not admitted across both genders. Again, men have a higher death rate when compared to women regardless of whether they were admitted into the ICU or not. 
+

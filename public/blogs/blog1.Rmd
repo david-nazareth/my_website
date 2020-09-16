@@ -1,10 +1,10 @@
 ---
 date: "2020-09-13"
-description: How have TfL bike rentals changed over time?
+description: How have TfL bike rentals in London changed during the pandemic?
 draft: false
 keywords: ""
 slug: blog1
-title: TfL Rentals
+title: TfL Bike Rentals
 ---
 
 

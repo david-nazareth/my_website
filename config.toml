@@ -98,10 +98,16 @@ disqusShortname = ""
       url = "blogs/blog6"
 
     [[params.tiles.showcase]]
-      title = "Weekly changes in TfL bike rentals"
-      subtitle = "How have TfL bike rentals in London changed over the last 5 years?"
+      title = "TfL Bike Rentals"
+      subtitle = "How have TfL bike rentals in London changed during the pandemic?"
       image = "pic02.png"
       url = "blogs/blog1"
+      
+    [[params.tiles.showcase]]
+      title = "COVID-19 death rate"
+      subtitle = "Visualising death rate from CDC Case Surveillance Data"
+      image = "pic03.png"
+      url = "blogs/blog3"
 
   
 

@@ -141,8 +141,15 @@ tidy_GDP_data  &lt;- UN_GDP_data %&gt;%
                names_to = &quot;year&quot;,  
                values_to= &quot;value&quot; 
                ) %&gt;% 
-  mutate(year= year(as.Date(year, &quot;%Y&quot;))) #converting the variable year to date format
-
+  mutate(year= year(as.Date(year, &quot;%Y&quot;)), #converting the variable year to date format
+         #shortening the names of the components of GDP
+         IndicatorName= case_when(
+           IndicatorName == &quot;Imports of goods and services&quot; ~ &quot;Imports&quot;,
+           IndicatorName == &quot;Exports of goods and services&quot; ~ &quot;Exports&quot;,
+           IndicatorName == &quot;General government final consumption expenditure&quot; ~ &quot;Government expenditure&quot;,
+           IndicatorName == &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot; ~ &quot;Household expenditure&quot;,
+           IndicatorName ==&quot;Gross capital formation&quot;~&quot;Gross capital formation&quot;
+         ))     
 
 # Let us compare GDP components for these 3 countries
 country_list &lt;- c(&quot;United States&quot;,&quot;India&quot;, &quot;Germany&quot;)</code></pre>
@@ -151,22 +158,12 @@ country_list &lt;- c(&quot;United States&quot;,&quot;India&quot;, &quot;Germany&
   #filtering for the components of GDP and countries that we need
   filter(Country %in% country_list,
          IndicatorName %in% c(&quot;Gross capital formation&quot;, 
-                              &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot;,
-                              &quot;Imports of goods and services&quot;,
-                              &quot;Exports of goods and services&quot;,
-                              &quot;General government final consumption expenditure&quot;)) %&gt;% 
+                              &quot;Household expenditure&quot;,
+                              &quot;Imports&quot;,
+                              &quot;Exports&quot;,
+                              &quot;Government expenditure&quot;)) %&gt;% 
+  # dividing by 1e9 for easier graphical representation
   mutate(value= value/ 1e9) 
-
-#shortening the names of some of the components of GDP 
-gdp_time &lt;- gdp_time  %&gt;% 
-  mutate(
-    IndicatorName= case_when(
-      IndicatorName == &quot;Imports of goods and services&quot; ~ &quot;Imports&quot;,
-      IndicatorName == &quot;Exports of goods and services&quot; ~ &quot;Exports&quot;,
-      IndicatorName == &quot;General government final consumption expenditure&quot; ~ &quot;Government expenditure&quot;,
-      IndicatorName == &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot; ~ &quot;Household expenditure&quot;,
-      IndicatorName ==&quot;Gross capital formation&quot;~&quot;Gross capital formation&quot;
-    ))
 
 
 ggplot(gdp_time, aes(x=year, y=value, color= IndicatorName)) +
@@ -187,19 +184,11 @@ ggplot(gdp_time, aes(x=year, y=value, color= IndicatorName)) +
 <pre class="r"><code>#calculating GDP as a sum of its components
 GDP_Calculated &lt;- tidy_GDP_data %&gt;% 
   #filtering for the components of GDP 
-  filter(IndicatorName %in% c(&quot;Gross capital formation&quot;, 
-                              &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot;,
-                              &quot;Imports of goods and services&quot;,
-                              &quot;Exports of goods and services&quot;,
-                              &quot;General government final consumption expenditure&quot;)) %&gt;%  
-  mutate(
-    IndicatorName= case_when(
-      IndicatorName == &quot;Imports of goods and services&quot; ~ &quot;Imports&quot;,
-      IndicatorName == &quot;Exports of goods and services&quot; ~ &quot;Exports&quot;,
-      IndicatorName == &quot;General government final consumption expenditure&quot; ~ &quot;Government expenditure&quot;,
-      IndicatorName == &quot;Household consumption expenditure (including Non-profit institutions serving households)&quot; ~ &quot;Household expenditure&quot;,
-      IndicatorName ==&quot;Gross capital formation&quot;~&quot;Gross capital formation&quot;
-    )) %&gt;% 
+ filter(IndicatorName %in% c(&quot;Gross capital formation&quot;, 
+                              &quot;Household expenditure&quot;,
+                              &quot;Imports&quot;,
+                              &quot;Exports&quot;,
+                              &quot;Government expenditure&quot;)) %&gt;% 
   pivot_wider(names_from= IndicatorName, values_from=value) 
 
 
@@ -233,8 +222,10 @@ GDP_Calculated %&gt;%
 <p>In the table above, one can clearly see the 5 indicators of GDP for all countries, each in a separate column. I will now calculate the net exports, pivot the data back to long format, group by year and country and finally sum all the components of GDP for each country in each year.</p>
 <pre class="r"><code>#calculating net exports
 GDP_Calculated &lt;- GDP_Calculated %&gt;% 
-  mutate(net_exports= Exports- Imports)%&gt;%  #creating a new column for net_exports 
-  select(-Imports, -Exports) %&gt;% #removing the columns &#39;Imports&#39; and &#39;Exports&#39; which are not required in the calculation of GDP
+  #creating a new column for net_exports 
+  mutate(net_exports= Exports- Imports)%&gt;%  
+  #removing the columns &#39;Imports&#39; and &#39;Exports&#39; which are not required in the calculation of GDP
+  select(-Imports, -Exports) %&gt;% 
   pivot_longer(
     cols=4:7,
     names_to = &quot;IndicatorName&quot;, 
@@ -261,7 +252,7 @@ GDP_Calculated</code></pre>
 ##  9  1970 Armenia                                NA 
 ## 10  1970 Aruba                           234175779.
 ## # … with 10,550 more rows</code></pre>
-<p>Next I will now compare the GDP values that I calculated above with the actual values and compute the percentage difference between the two.</p>
+<p>Next I will compare the GDP values that I calculated above with the actual values and compute the percentage difference between the two.</p>
 <pre class="r"><code>#selecting indicator GDP from UN GDP data
 UN_GDP &lt;- UN_GDP_data %&gt;% 
   filter(IndicatorName==&quot;Gross Domestic Product (GDP)&quot;) %&gt;% 
@@ -306,6 +297,8 @@ paste(&quot;Percentage difference in GDP calculated vs GDP figure included in th
 favstats(~percentage_difference_in_GDP, data = GDP_Difference)</code></pre>
 <pre><code>##    min    Q1    median   Q3 max  mean   sd    n missing
 ##  -54.9 -2.12 -3.08e-08 2.19 116 0.398 8.71 9574     986</code></pre>
+<p>From the table above we can see that the median % difference between calculated GDP and actual GDP is very close to 0.
+Next, let’s look at how the proportion of the various components of GDP has changed for India, Germany and the United States.</p>
 <pre class="r"><code>trans_UN_GDP_Data &lt;-  UN_GDP_data %&gt;% 
   #filtering for the components of GDP that we need for 3 selected countries
   filter(Country %in% c(&quot;India&quot;, &quot;Germany&quot;, &quot;United States&quot;),
@@ -315,6 +308,7 @@ favstats(~percentage_difference_in_GDP, data = GDP_Difference)</code></pre>
                               &quot;Exports of goods and services&quot;,
                               &quot;General government final consumption expenditure&quot;,
                               &quot;Gross Domestic Product (GDP)&quot;)) %&gt;% 
+  #shortening the names of the components of GDP
   mutate(
     IndicatorName= case_when(
       IndicatorName == &quot;Imports of goods and services&quot; ~ &quot;Imports&quot;,
