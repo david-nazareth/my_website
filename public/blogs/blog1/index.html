@@ -40,7 +40,7 @@
 
             <!-- Header -->
     <header id="header" class="alt">
-        <a href="/" class="logo"><strong></strong> <span></span></a>
+        <a href="/" class="logo"><strong>DNazareth</strong> <span>Personal Portfolio</span></a>
         <nav>
             <a href="#menu"></a>
         </nav>
@@ -119,7 +119,7 @@ bike %&gt;%
     axis.text.y = element_blank()
   )</code></pre>
 <p><img src="/blogs/blog1_files/figure-html/fig1-1.png" width="1248" style="display: block; margin: auto;" /></p>
-<p>The distribution of bike rentals for May and June 2020 appears to be more spread out when compared to previous years. This higher standard deviation in bike rentals in summar 2020 is as a result of the COVID-19 lockdown which changed the movement patterns of people in the city compared with previous years. People now use bikes rather than public transport for both essential travel and leisure.This explains some of the days in May and June that saw a high number of bikes being rented. However the lockdown has also caused bike rentals to be adversely affected on certain days with people having to work from home rather than office and not moving about as much.</p>
+<p>The distribution of bike rentals for May and June 2020 appears to be more spread out when compared to previous years. This higher standard deviation in bike rentals in summar 2020 is as a direct result of the COVID-19 lockdown which changed the movement patterns of people in the city compared with previous years. People now use bikes rather than public transport for both essential travel and leisure.This explains some of the days in May and June that saw a high number of bikes being rented. However the lockdown has also caused bike rentals to be adversely affected on certain days with people having to work from home rather than office and not moving about as much.</p>
 <p>In order to understand how monthly bike rentals varied during the COVID-19 lockdown compared with the average rentals since 2015, I have created a visualization with the monthly average shown in blue and the actual number of rentals in black. I used the geom_ribbon function to colour the band between the two lines red, if actual rentals is lower than expected rentals and green if actual rentals is above expected rentals.</p>
 <pre class="r"><code>#calculating actual and expected monthly averages for bike rentals
 actual_monthly_avg&lt;-bike %&gt;%
@@ -231,6 +231,30 @@ ggplot(weekly_changes)+
             </div>
             
         <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="" class="icon alt " target="_blank"><span class="label"></span></a></li>
+                
+                    <li><a href="" class="icon alt " target="_blank"><span class="label"></span></a></li>
+                
+                    <li><a href="https://github.com/david-nazareth" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/david-nazareth/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; </li>
+                
+                <li> <a href=""></a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
             
         </div>
 

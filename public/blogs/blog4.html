@@ -1,0 +1,150 @@
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>If we wanted to study climate change, we can find data on the <em>Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies</em> in the Northern Hemisphere at <a href="https://data.giss.nasa.gov/gistemp">NASA’s Goddard Institute for Space Studies</a>.</p>
+<p>To define temperature anomalies you need to have a reference, or base, period which NASA clearly states that it is the period between 1951-1980.</p>
+<pre class="r"><code>#loading the data from NASA&#39;s Goddard Institute for Space Studies
+
+weather &lt;- 
+  read_csv(&quot;https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv&quot;, 
+           skip = 1, 
+           na = &quot;***&quot;)</code></pre>
+<pre class="r"><code>weather_1 &lt;- weather %&gt;% 
+  select(Year:Dec) 
+
+tidyweather &lt;- weather_1 %&gt;% 
+  pivot_longer(col=(Jan:Dec), names_to= &quot;Month&quot;, values_to= &quot;temp_deviation&quot; )</code></pre>
+<div id="plotting-information" class="section level2">
+<h2>Plotting Information</h2>
+<pre class="r"><code>tidyweather &lt;- tidyweather %&gt;%
+  mutate(date = ymd(paste(as.character(Year), Month, &quot;1&quot;)),
+         month = month(date, label=TRUE),
+         year = year(date))
+
+ggplot(tidyweather, aes(x=date, y = temp_deviation))+
+  geom_point()+
+  geom_smooth(color=&quot;red&quot;) +
+  theme_bw() +
+  labs (
+    title = &quot;Weather Anomalies&quot;, 
+    y=&quot;Temperature Deviation&quot;,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;
+  )+
+  theme(
+    axis.title.x = element_blank()
+  )</code></pre>
+<p><img src="/blogs/blog4_files/figure-html/scatter_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(tidyweather, aes(x=date, y = temp_deviation))+
+  geom_point()+
+  geom_smooth(color=&quot;red&quot;) +
+  theme_bw() +
+  facet_wrap(~month)+
+  labs (
+    title = &quot;Monthly Weather Anomalies&quot;,
+    y=&quot;Temperature Deviation&quot;,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;
+  )+
+  theme(
+    axis.title.x = element_blank()
+  )</code></pre>
+<p><img src="/blogs/blog4_files/figure-html/facet_plot_weather_anomalies-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>We remove data before 1800 and before using <code>filter</code>. Then, we use the <code>mutate</code> function to create a new variable <code>interval</code> which contains information on which period each observation belongs to. We can assign the different periods using <code>case_when()</code>.</p>
+<pre class="r"><code>comparison &lt;- tidyweather %&gt;% 
+  filter(Year&gt;= 1881) %&gt;%     #remove years prior to 1881
+  #create new variable &#39;interval&#39;, and assign values based on criteria below:
+  mutate(interval = case_when(
+    Year %in% c(1881:1920) ~ &quot;1881-1920&quot;,
+    Year %in% c(1921:1950) ~ &quot;1921-1950&quot;,
+    Year %in% c(1951:1980) ~ &quot;1951-1980&quot;,
+    Year %in% c(1981:2010) ~ &quot;1981-2010&quot;,
+    TRUE ~ &quot;2011-present&quot;
+  ))</code></pre>
+<p>Now that we have the <code>interval</code> variable, we can create a density plot to study the distribution of monthly deviations (<code>delta</code>), grouped by the different time periods we are interested in. Set <code>fill</code> to <code>interval</code> to group and colour the data by different time periods.</p>
+<pre class="r"><code>ggplot(comparison, aes(x=temp_deviation, fill=interval))+
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_bw() +                #theme
+  labs (
+    title = &quot;Density Plot for Monthly Temperature Anomalies&quot;,
+    y     = &quot;Density&quot;, #changing y-axis label to sentence case
+    x= &quot;Temperature Deviation&quot;,
+    fill= &quot;Time Period&quot; ,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;
+  )</code></pre>
+<p><img src="/blogs/blog4_files/figure-html/density_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>So far, we have been working with monthly anomalies. However, we might be interested in average annual anomalies. We can do this by using <code>group_by()</code> and <code>summarise()</code>, followed by a scatter plot to display the result.</p>
+<pre class="r"><code>#creating yearly averages
+average_annual_anomaly &lt;- tidyweather %&gt;% 
+  group_by(Year) %&gt;%   #grouping data by Year
+  
+  # creating summaries for mean delta 
+  # use `na.rm=TRUE` to eliminate NA (not available) values 
+  summarise(annual_average_delta = mean(temp_deviation, na.rm=TRUE)) 
+
+#plotting the data:
+ggplot(average_annual_anomaly, aes(x=Year, y= annual_average_delta))+
+  geom_point()+
+  
+  #Fit the best fit line, using LOESS method
+  geom_smooth() +
+  
+  #change to theme_bw() to have white background + black frame around plot
+  theme_bw() +
+  labs (
+    title = &quot;Average Yearly Anomaly&quot;,
+    y     = &quot;Average Annual Delta&quot;,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;
+  )  +
+  theme(
+    axis.title.x = element_blank()
+  )</code></pre>
+<p><img src="/blogs/blog4_files/figure-html/averaging_annual_anomalies-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="confidence-interval-for-delta" class="section level2">
+<h2>Confidence Interval for <code>delta</code></h2>
+<pre class="r"><code>library(infer)
+
+formula_ci &lt;- comparison %&gt;% 
+  filter(interval==&quot;2011-present&quot;) %&gt;% 
+  summarise(mean_delta= mean(temp_deviation, na.rm=TRUE), 
+            sd_delta= sd(temp_deviation, na.rm=TRUE),
+            count_delta= n(),
+            se_delta= sd_delta/sqrt(count_delta),
+            #calculating t_critical value for a 95% confidence interval
+            t_critical= qt(0.975,   count_delta-1), 
+            lower_delta= mean_delta- t_critical*se_delta,
+            upper_delta= mean_delta+ t_critical*se_delta
+            )
+
+formula_ci</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   mean_delta sd_delta count_delta se_delta t_critical lower_delta upper_delta
+##        &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt;    &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+## 1      0.966    0.262         108   0.0252       1.98       0.916        1.02</code></pre>
+<pre class="r"><code># use the infer package to construct a 95% CI for delta
+
+boot_delta &lt;- comparison%&gt;%
+  
+  filter(interval==&quot;2011-present&quot;) %&gt;%
+  
+  # Specify the variable of interest
+  specify(response = temp_deviation) %&gt;%
+  
+  # Generate a bunch of bootstrap samples
+  generate(reps = 1000, type = &quot;bootstrap&quot;) %&gt;%
+  
+  calculate(stat =&quot;mean&quot;) 
+
+percentile_ci &lt;- boot_delta %&gt;%
+get_ci(level = 0.95, type = &quot;percentile&quot;)
+
+percentile_ci</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower_ci upper_ci
+##      &lt;dbl&gt;    &lt;dbl&gt;
+## 1    0.914     1.02</code></pre>
+<blockquote>
+
+</blockquote>
+<p>Regardless of whether we choose the bootstrap method (we decided to do 1000 replications) or the CI formula method to estimate the population mean, we can say with 95% confidence that the mean temerature deviation has been around 1 degree since 2011.</p>
+</div>

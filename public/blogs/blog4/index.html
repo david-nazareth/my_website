@@ -1,0 +1,599 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Your description">
+	<meta name="author" content="David Nazareth">
+	<meta name="generator" content="Hugo 0.74.3" />
+	<title>Make our Planet Great Again! &middot; David Nazareth</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>DNazareth</strong> <span>Personal Portfolio</span></a>
+        <nav>
+            <a href="#menu"></a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Make our Planet Great Again!</h1>
+                            </header>
+                            
+                            
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>While it is true that the earth’s temperature has changed a lot over the course of its 4.5-billion-year history, the pace of the warming that we are seeing in the recent past is unprecedented. In spite of many significant warning signs, many people choose to deny the fact that man-made climate change is an issue that needs to be addressed urgently if we want to save millions of species from the harsh conditions that will arise if we allow 1.5 degree Celsius warming above pre-industrial temperatures.</p>
+<p>In this project I attempt to analyse data on the <em>Combined Land-Surface, Air and Sea-Surface Water Temperature Anomalies</em> in the Northern Hemisphere from <a href="https://data.giss.nasa.gov/gistemp">NASA’s Goddard Institute for Space Studies</a> and see how the temperature anomalies compare to the reference, or base, period which NASA clearly states is the period between 1951-1980. In doing so we will attempt to end the climate change hoax.</p>
+<div id="loading-and-inspecting-the-data" class="section level2">
+<h2>Loading and inspecting the data</h2>
+<p>I will first load the dataset using the read_csv function and use skim to view the data. The dataset consists of 140 rows and 19 columns and is in wide format since each month is a separate column.</p>
+<pre class="r"><code>#loading the data from NASA&#39;s Goddard Institute for Space Studies
+
+weather &lt;- 
+  read_csv(&quot;https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv&quot;, 
+           skip = 1, 
+           na = &quot;***&quot;)
+
+skim(weather) #looking at the data to identify variables of interest</code></pre>
+<table>
+<caption>(#tab:weather_data)Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">weather</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">140</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">19</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">numeric</td>
+<td align="left">19</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Year</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1949.50</td>
+<td align="right">40.56</td>
+<td align="right">1880.00</td>
+<td align="right">1914.75</td>
+<td align="right">1949.50</td>
+<td align="right">1984.25</td>
+<td align="right">2019.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">Jan</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.04</td>
+<td align="right">0.53</td>
+<td align="right">-1.47</td>
+<td align="right">-0.35</td>
+<td align="right">0.00</td>
+<td align="right">0.35</td>
+<td align="right">1.55</td>
+<td align="left">▁▅▇▃▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Feb</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.08</td>
+<td align="right">0.53</td>
+<td align="right">-0.89</td>
+<td align="right">-0.36</td>
+<td align="right">-0.02</td>
+<td align="right">0.46</td>
+<td align="right">1.92</td>
+<td align="left">▆▇▆▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">Mar</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.10</td>
+<td align="right">0.51</td>
+<td align="right">-0.77</td>
+<td align="right">-0.27</td>
+<td align="right">0.02</td>
+<td align="right">0.34</td>
+<td align="right">1.83</td>
+<td align="left">▆▇▃▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Apr</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.06</td>
+<td align="right">0.45</td>
+<td align="right">-0.68</td>
+<td align="right">-0.27</td>
+<td align="right">-0.02</td>
+<td align="right">0.26</td>
+<td align="right">1.42</td>
+<td align="left">▅▇▃▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">May</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.04</td>
+<td align="right">0.39</td>
+<td align="right">-0.74</td>
+<td align="right">-0.23</td>
+<td align="right">-0.02</td>
+<td align="right">0.22</td>
+<td align="right">1.03</td>
+<td align="left">▂▇▇▂▂</td>
+</tr>
+<tr class="odd">
+<td align="left">Jun</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.05</td>
+<td align="right">0.38</td>
+<td align="right">-0.56</td>
+<td align="right">-0.20</td>
+<td align="right">-0.04</td>
+<td align="right">0.19</td>
+<td align="right">1.15</td>
+<td align="left">▅▇▃▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">Jul</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.05</td>
+<td align="right">0.35</td>
+<td align="right">-0.60</td>
+<td align="right">-0.18</td>
+<td align="right">-0.02</td>
+<td align="right">0.14</td>
+<td align="right">1.02</td>
+<td align="left">▃▇▃▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Aug</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.04</td>
+<td align="right">0.36</td>
+<td align="right">-0.76</td>
+<td align="right">-0.21</td>
+<td align="right">-0.04</td>
+<td align="right">0.18</td>
+<td align="right">1.08</td>
+<td align="left">▂▇▆▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">Sep</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.06</td>
+<td align="right">0.36</td>
+<td align="right">-0.70</td>
+<td align="right">-0.18</td>
+<td align="right">-0.01</td>
+<td align="right">0.20</td>
+<td align="right">1.18</td>
+<td align="left">▂▇▅▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Oct</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.11</td>
+<td align="right">0.40</td>
+<td align="right">-0.81</td>
+<td align="right">-0.18</td>
+<td align="right">0.04</td>
+<td align="right">0.27</td>
+<td align="right">1.24</td>
+<td align="left">▁▇▇▂▂</td>
+</tr>
+<tr class="even">
+<td align="left">Nov</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.08</td>
+<td align="right">0.44</td>
+<td align="right">-0.81</td>
+<td align="right">-0.24</td>
+<td align="right">0.04</td>
+<td align="right">0.28</td>
+<td align="right">1.35</td>
+<td align="left">▃▇▇▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Dec</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.02</td>
+<td align="right">0.47</td>
+<td align="right">-1.10</td>
+<td align="right">-0.30</td>
+<td align="right">-0.03</td>
+<td align="right">0.32</td>
+<td align="right">1.45</td>
+<td align="left">▁▇▇▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">J-D</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.06</td>
+<td align="right">0.39</td>
+<td align="right">-0.54</td>
+<td align="right">-0.22</td>
+<td align="right">-0.01</td>
+<td align="right">0.21</td>
+<td align="right">1.28</td>
+<td align="left">▆▇▂▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">D-N</td>
+<td align="right">2</td>
+<td align="right">0.99</td>
+<td align="right">0.06</td>
+<td align="right">0.39</td>
+<td align="right">-0.54</td>
+<td align="right">-0.21</td>
+<td align="right">-0.02</td>
+<td align="right">0.22</td>
+<td align="right">1.31</td>
+<td align="left">▆▇▂▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">DJF</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.05</td>
+<td align="right">0.48</td>
+<td align="right">-1.00</td>
+<td align="right">-0.30</td>
+<td align="right">-0.05</td>
+<td align="right">0.38</td>
+<td align="right">1.64</td>
+<td align="left">▂▇▆▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">MAM</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.07</td>
+<td align="right">0.43</td>
+<td align="right">-0.66</td>
+<td align="right">-0.25</td>
+<td align="right">-0.02</td>
+<td align="right">0.24</td>
+<td align="right">1.43</td>
+<td align="left">▅▇▃▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">JJA</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.04</td>
+<td align="right">0.36</td>
+<td align="right">-0.54</td>
+<td align="right">-0.20</td>
+<td align="right">-0.03</td>
+<td align="right">0.15</td>
+<td align="right">1.07</td>
+<td align="left">▅▇▃▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">SON</td>
+<td align="right">1</td>
+<td align="right">0.99</td>
+<td align="right">0.08</td>
+<td align="right">0.39</td>
+<td align="right">-0.67</td>
+<td align="right">-0.21</td>
+<td align="right">0.01</td>
+<td align="right">0.24</td>
+<td align="right">1.24</td>
+<td align="left">▃▇▅▂▁</td>
+</tr>
+</tbody>
+</table>
+<p>In order to create effective visualisations of the data in R, I will have to convert the data into long format using pivot_longer after selecting the variables that I need for this analysis (<code>Year</code> and columns <code>Jan</code> to <code>December</code>). I named this new dataset <code>tidyweather</code>.</p>
+<pre class="r"><code>#selecting the columns that I need and converting data to long format
+tidyweather &lt;- 
+  weather %&gt;% 
+  select(Year:Dec) %&gt;% 
+  pivot_longer(col=(Jan:Dec), names_to= &quot;Month&quot;, values_to= &quot;temp_deviation&quot; )</code></pre>
+<p>Next let’s create some informative graphs to visually learn what the data is trying to tell us.</p>
+</div>
+<div id="plotting-information" class="section level2">
+<h2>Plotting Information</h2>
+<p>I will first create a time series plot of the annual temperature deviations about the base period. This will help us see how temperature deviations have changed sice 1880.</p>
+<pre class="r"><code>#converting fields to date format using the lubridate package in order to plot data as a time series
+tidyweather &lt;- tidyweather %&gt;%
+  mutate(date = ymd(paste(as.character(Year), Month, &quot;1&quot;)),
+         month = month(date, label=TRUE),
+         year = year(date))
+
+#plotting a time series scatterplot
+ggplot(tidyweather, aes(x=date, y = temp_deviation))+
+  geom_point()+
+  geom_smooth(color=&quot;blue&quot;) +
+  theme_fivethirtyeight() +#adding theme fivethirtyeight
+  labs (
+    title = &quot;Climate change is a hoax. Really?&quot;, 
+    subtitle= &quot;Annual temperature deviation relative to 1951-1980 base&quot;,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;
+  )+
+  theme(
+    axis.title.x = element_blank()
+  )</code></pre>
+<p><img src="/blogs/blog4_files/figure-html/timeseries%20scatter_plot,%20fig1-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>One can clearly see a sharp increase in temperature deviation from the late 20th century onwards. Let’s also look at how temperature anomalies varied by month.</p>
+<pre class="r"><code>#creating a time series scatterplot of temperature anomalies faceted by month
+ggplot(tidyweather, aes(x=date, y =  temp_deviation))+
+  geom_point()+
+  geom_smooth(color=&quot;red&quot;,size=0.5) +
+  facet_wrap(~month)+
+  theme_fivethirtyeight() +
+  labs(
+    title = &quot;How do temperature anomalies vary by month?&quot;, 
+    subtitle= &quot;Temperature deviation relative to 1951-1980 base&quot;,
+    y=&quot;Temperature Deviation&quot;,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;) +
+  theme(
+    axis.title=element_blank()
+    ) </code></pre>
+<p><img src="/blogs/blog4_files/figure-html/facet_plot_weather_anomalies,%20fig2-1.png" width="1152" style="display: block; margin: auto;" />
+Let’s also try to visulaise which month saw the most temperature deviation in absolute terms between 1980 and 2019 relative to the base period.</p>
+<pre class="r"><code>tidyweather %&gt;% 
+  filter(year&gt;1980) %&gt;% 
+  group_by(month) %&gt;% 
+  #convert all temp_deviations to absolute value by taking the square root of the squared deviation
+  summarise(mean_temp_deviation=mean(sqrt(temp_deviation^2), na.rm=TRUE)) %&gt;% 
+  #using fct_reorder to arrange columns in the chart
+  ggplot(aes(x=fct_reorder(month, mean_temp_deviation, .desc=TRUE),
+             y=mean_temp_deviation))+
+  geom_col()+
+  theme_fivethirtyeight() +
+  labs(
+    title = &quot;Which months have the highest absolute temperature deviations?&quot;, 
+    subtitle= &quot;Absolute temperature deviation after 1981 relative to 1951-1980 base&quot;,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;) +
+  theme(
+    axis.title=element_blank()
+  ) </code></pre>
+<p><img src="/blogs/blog4_files/figure-html/month_most_deviation,%20fig3-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>We can see that the mean absolute temperature deviation is highest in the month of March relative to the base period.</p>
+<p>Now let’s try and visualise the distribution of temperature deviations over various time intervals relative to the base 1951-1980 period. I will create a new categorical variable named <code>interval</code> which classifies a year according to the period into which it belongs.</p>
+<pre class="r"><code>comparison_of_periods &lt;- tidyweather %&gt;% 
+  filter(Year&gt;= 1881) %&gt;%     #remove years prior to 1881
+  #create new variable &#39;interval&#39;, and assign values based on criteria below:
+  mutate(interval = case_when(
+    Year %in% c(1881:1920) ~ &quot;1881-1920&quot;,
+    Year %in% c(1921:1950) ~ &quot;1921-1950&quot;,
+    Year %in% c(1951:1980) ~ &quot;1951-1980&quot;,
+    Year %in% c(1981:2010) ~ &quot;1981-2010&quot;,
+    TRUE ~ &quot;2011-present&quot;
+  ))</code></pre>
+<p>Now that I have the <code>interval</code> variable, I will create a density plot to study the distribution of monthly temperature deviations in the latter half of the 20th century and last two decades relative to the base temperature.</p>
+<pre class="r"><code>ggplot(comparison_of_periods, aes(x=temp_deviation, fill=interval))+
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_fivethirtyeight() +                #adding theme fivethirtyeight
+  labs (
+    title = &quot;It&#39;s safe to say that the last decade has been hot!&quot;,
+    subtitle= &quot;Distribution of monthly temperature deviations by time interval&quot;,
+    fill= &quot;Time Period&quot; ,
+    caption=&quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;
+  )</code></pre>
+<p><img src="/blogs/blog4_files/figure-html/density_plot,fig4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>We can see that the mean temperature deviation over the last decade has been around 1 degree Celsius higher than the mean temperature deviation in the base period. Let us confirm this by constructing confidence intervals for the temperature deviation.</p>
+</div>
+<div id="creating-confidence-intervals-for-temperature-deviation-in-the-last-ten-years" class="section level2">
+<h2>Creating confidence intervals for temperature deviation in the last ten years</h2>
+<p>First let’s use the formula to calculate the lower and upper confidence interval (95%) for the population mean.</p>
+<pre class="r"><code>library(infer)
+
+formula_ci &lt;- comparison_of_periods %&gt;% 
+  filter(interval==&quot;2011-present&quot;) %&gt;% 
+  summarise(mean_delta= mean(temp_deviation, na.rm=TRUE), 
+            sd_delta= sd(temp_deviation, na.rm=TRUE),
+            count_delta= n(),
+            se_delta= sd_delta/sqrt(count_delta),
+            #calculating t_critical value for a 95% confidence interval
+            t_critical= qt(0.975,   count_delta-1), 
+            lower_delta= mean_delta- t_critical*se_delta,
+            upper_delta= mean_delta+ t_critical*se_delta
+            )
+
+formula_ci</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   mean_delta sd_delta count_delta se_delta t_critical lower_delta upper_delta
+##        &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt;    &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+## 1      0.966    0.262         108   0.0252       1.98       0.916        1.02</code></pre>
+<p>The mean temperature deviation is about 0.966 °C with a 95% confidence interval between 0.916 and 1.02 °C.</p>
+<p>Let’s also use bootstrapping (resampling with replacement) to create a sampling distribution and use it to estimate the population mean with a 95% confidence interval. We will create 5000 replications by bootstrapping and use them to estimate the population mean.</p>
+<pre class="r"><code># use the infer package to construct a 95% CI for temperature deviation
+
+set.seed(3425) #setting seed for reproducability
+
+boot_temp_dev&lt;-comparison_of_periods  %&gt;%
+  #filter the dataset for interval 2011-present
+  filter(interval==&quot;2011-present&quot;) %&gt;% 
+  
+  #specify the variable whose sampling distribution you want to create
+  specify(response = temp_deviation) %&gt;% 
+  
+  #specify number of replicates
+  generate(reps = 5000, type = &quot;bootstrap&quot;) %&gt;%
+  
+  #stat to calculate in each resample is the mean of temperature deviation 
+  calculate(stat = &quot;mean&quot;)
+
+conf_intervals &lt;- boot_temp_dev %&gt;%
+  get_ci(level = 0.95, type = &quot;percentile&quot;) 
+
+conf_intervals</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower_ci upper_ci
+##      &lt;dbl&gt;    &lt;dbl&gt;
+## 1    0.917     1.02</code></pre>
+<pre class="r"><code>#using visualize to display the sampling distribution and mark the confidence interval of the mean temperature 
+visualize(boot_temp_dev) + 
+  shade_ci(endpoints = conf_intervals)+ 
+  geom_vline(xintercept = conf_intervals$lower_ci)+
+  geom_vline(xintercept = conf_intervals$upper_ci) + 
+  theme_fivethirtyeight() + theme(axis.title=element_text()) +
+  labs(x=&quot;Mean Deviation From Expected Temperature (°C)&quot;, 
+       title=&quot;Mean Temperature Deviation (2011-Present)&quot;,
+       subtitle=&quot;Sampling distribution of mean temperature deviation from base period generated by boostrapping&quot;)</code></pre>
+<p><img src="/blogs/blog4_files/figure-html/calculate_CI_using_bootstrap,%20fig5-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>We are now 95% confident that the average temperature deviation over the last 10 years is between 0.917 and 1.02 °C higher than that of the base period.</p>
+<p>So is global warming really happening? The data certainly tells us that the earth has been warming at an unprecedented rate over the last decade. We need to fundamentally change the way we produce, use, dispose of, and recycle the earth’s resources if we are to prevent the temperatures from rising 1.5-2 °C above the pre-industrial temperatures.</p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="" class="icon alt " target="_blank"><span class="label"></span></a></li>
+                
+                    <li><a href="" class="icon alt " target="_blank"><span class="label"></span></a></li>
+                
+                    <li><a href="https://github.com/david-nazareth" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/david-nazareth/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; </li>
+                
+                <li> <a href=""></a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

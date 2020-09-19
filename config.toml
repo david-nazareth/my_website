@@ -4,6 +4,9 @@ languageCode = "en-us"
 title = "David Nazareth"
 theme = "forty"
 
+# Enable for syntax highlighting
+pygmentsUseClasses = true
+
 # Enter your tracking code to enable Google Analytics
 googleAnalytics = ""
 
@@ -35,10 +38,10 @@ disqusShortname = ""
     heading = "Page couldn't be found"
     #text = "Please visit [this page](/)"
 
-  # Navigation Section
-  #[params.navigation]
-    #title = "Forty"
-    #subtitle = "By HTML5 Up"
+    # Navigation Section
+    [params.navigation]
+    title = "DNazareth"
+    subtitle = "Personal Portfolio"
     #menu = "Menu"
     # Optional logo as brand stored in img/
     # logo = "logo.png"
@@ -99,7 +102,7 @@ disqusShortname = ""
 
     [[params.tiles.showcase]]
       title = "TfL Bike Rentals"
-      subtitle = "How have TfL bike rentals in London changed during the pandemic?"
+      subtitle = "How have TfL bike rentals changed during the pandemic?"
       image = "pic02.png"
       url = "blogs/blog1"
       
@@ -108,6 +111,12 @@ disqusShortname = ""
       subtitle = "Visualising death rate from CDC Case Surveillance Data"
       image = "pic03.png"
       url = "blogs/blog3"
+      
+      [[params.tiles.showcase]]
+      title = "Make our Planet Great Again!"
+      subtitle = "Ending the climate change myth"
+      image = "pic05.png"
+      url = "blogs/blog4"
 
   
 
@@ -169,7 +178,7 @@ disqusShortname = ""
 
   # Footer section
   [params.footer]
-    #enable = true
+   enable = true
     #copyright = "Company Name"
 
     # Uses font awesome icons
