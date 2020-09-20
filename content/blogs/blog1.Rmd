@@ -1,9 +1,10 @@
 ---
 date: "2020-09-16"
-description: How have TfL bike rentals in London changed during the pandemic?
+description: How have TfL bike rentals changed during the pandemic?
 draft: false
 keywords: ""
 slug: blog1
+image: pic02.png
 title: "TfL Bike Rentals"
 ---
 
@@ -153,6 +154,8 @@ ggplot(data=monthly_average, aes(x=month))+
 
 One can clearly see a drastic decrease in the number of bikes hired from early February, 2020 onwards uptill the beginning of May. From then on, bike rentals have been slightly above the monthly average possibly due to people using them for leisure and as a safer alternative to public transport. 
 
+Next I will compare weekly rentals in 2020 with the expected weekly rentals calculated using data from 2015-2019. The graph below represents the percentage change (positive or negative) from the expected weekly rentals.
+
 ```{r, weekly changes in TFL bike rentals, fig3, fig.width = 12, fig.height=6}
 #calculating expected weekly averages for bike rentals
 weekly_avg <- bike %>% 
@@ -212,7 +215,9 @@ ggplot(weekly_changes)+
 
 ```
 
+The graph above paints a similar picture to that which we saw when we looked at actual vs expected monthly rentals during the pandemic. 
 
+Nobody really knows what the long term effects of the COVID-19 pandemic will be on the mobility patterns of people in cities but I think we can all agree that 2020 has been a very erratic year for public transportation. 
 
 
 

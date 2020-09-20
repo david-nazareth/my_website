@@ -3,6 +3,7 @@ title: "COVID-19 Death Rate"
 description: Visualising death rate from CDC Case Surveillance Data
 date: '2020-09-16'
 keywords: ''
+image: pic03.png
 slug: blog3
 draft: no
 ---

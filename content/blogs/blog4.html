@@ -3,11 +3,14 @@ title: "Make our Planet Great Again!"
 description: Ending the myth behind climate change
 date: '2020-09-18'
 keywords: ''
+image: pic05.png
 slug: blog4
 draft: no
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 
 <p>While it is true that the earth’s temperature has changed a lot over the course of its 4.5-billion-year history, the pace of the warming that we are seeing in the recent past is unprecedented. In spite of many significant warning signs, many people choose to deny the fact that man-made climate change is an issue that needs to be addressed urgently if we want to save millions of species from the harsh conditions that will arise if we allow 1.5 degree Celsius warming above pre-industrial temperatures.</p>
@@ -327,7 +330,7 @@ skim(weather) #looking at the data to identify variables of interest</code></pre
 </tr>
 </tbody>
 </table>
-<p>In order to create effective visualisations of the data in R, I will have to convert the data into long format using pivot_longer after selecting the variables that I need for this analysis (<code>Year</code> and columns <code>Jan</code> to <code>December</code>). I named this new dataset <code>tidyweather</code>.</p>
+<p>In order to create effective visualisations of the data in R, I will have to convert the data into long format using pivot_longer after selecting the variables that I need for this analysis (<code>Year</code> and columns <code>Jan</code> to <code>Dec</code>). I named this new dataset <code>tidyweather</code>.</p>
 <pre class="r"><code>#selecting the columns that I need and converting data to long format
 tidyweather &lt;- 
   weather %&gt;% 
@@ -374,7 +377,7 @@ ggplot(tidyweather, aes(x=date, y =  temp_deviation))+
     axis.title=element_blank()
     ) </code></pre>
 <p><img src="/blogs/blog4_files/figure-html/facet_plot_weather_anomalies,%20fig2-1.png" width="1152" style="display: block; margin: auto;" />
-Let’s also try to visulaise which month saw the most temperature deviation in absolute terms between 1980 and 2019 relative to the base period.</p>
+Let’s also try to visualise which month saw the most temperature deviation in absolute terms between 1980 and 2019 relative to the base period.</p>
 <pre class="r"><code>tidyweather %&gt;% 
   filter(year&gt;1980) %&gt;% 
   group_by(month) %&gt;% 
@@ -421,9 +424,7 @@ Let’s also try to visulaise which month saw the most temperature deviation in 
 <div id="creating-confidence-intervals-for-temperature-deviation-in-the-last-ten-years" class="section level2">
 <h2>Creating confidence intervals for temperature deviation in the last ten years</h2>
 <p>First let’s use the formula to calculate the lower and upper confidence interval (95%) for the population mean.</p>
-<pre class="r"><code>library(infer)
-
-formula_ci &lt;- comparison_of_periods %&gt;% 
+<pre class="r"><code>formula_ci &lt;- comparison_of_periods %&gt;% 
   filter(interval==&quot;2011-present&quot;) %&gt;% 
   summarise(mean_delta= mean(temp_deviation, na.rm=TRUE), 
             sd_delta= sd(temp_deviation, na.rm=TRUE),
@@ -431,15 +432,66 @@ formula_ci &lt;- comparison_of_periods %&gt;%
             se_delta= sd_delta/sqrt(count_delta),
             #calculating t_critical value for a 95% confidence interval
             t_critical= qt(0.975,   count_delta-1), 
+            #calculating confidence interval using the formula
             lower_delta= mean_delta- t_critical*se_delta,
             upper_delta= mean_delta+ t_critical*se_delta
             )
 
-formula_ci</code></pre>
-<pre><code>## # A tibble: 1 x 7
-##   mean_delta sd_delta count_delta se_delta t_critical lower_delta upper_delta
-##        &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt;    &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
-## 1      0.966    0.262         108   0.0252       1.98       0.916        1.02</code></pre>
+formula_ci %&gt;% 
+  kbl() %&gt;%
+  kable_material(c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class=" lightable-material lightable-striped lightable-hover" style="font-family: &quot;Source Sans Pro&quot;, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+mean_delta
+</th>
+<th style="text-align:right;">
+sd_delta
+</th>
+<th style="text-align:right;">
+count_delta
+</th>
+<th style="text-align:right;">
+se_delta
+</th>
+<th style="text-align:right;">
+t_critical
+</th>
+<th style="text-align:right;">
+lower_delta
+</th>
+<th style="text-align:right;">
+upper_delta
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.966
+</td>
+<td style="text-align:right;">
+0.262
+</td>
+<td style="text-align:right;">
+108
+</td>
+<td style="text-align:right;">
+0.025
+</td>
+<td style="text-align:right;">
+1.98
+</td>
+<td style="text-align:right;">
+0.916
+</td>
+<td style="text-align:right;">
+1.02
+</td>
+</tr>
+</tbody>
+</table>
 <p>The mean temperature deviation is about 0.966 °C with a 95% confidence interval between 0.916 and 1.02 °C.</p>
 <p>Let’s also use bootstrapping (resampling with replacement) to create a sampling distribution and use it to estimate the population mean with a 95% confidence interval. We will create 5000 replications by bootstrapping and use them to estimate the population mean.</p>
 <pre class="r"><code># use the infer package to construct a 95% CI for temperature deviation
@@ -462,11 +514,31 @@ boot_temp_dev&lt;-comparison_of_periods  %&gt;%
 conf_intervals &lt;- boot_temp_dev %&gt;%
   get_ci(level = 0.95, type = &quot;percentile&quot;) 
 
-conf_intervals</code></pre>
-<pre><code>## # A tibble: 1 x 2
-##   lower_ci upper_ci
-##      &lt;dbl&gt;    &lt;dbl&gt;
-## 1    0.917     1.02</code></pre>
+conf_intervals %&gt;% 
+  kbl() %&gt;%
+  kable_material(c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class=" lightable-material lightable-striped lightable-hover" style="font-family: &quot;Source Sans Pro&quot;, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+lower_ci
+</th>
+<th style="text-align:right;">
+upper_ci
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.917
+</td>
+<td style="text-align:right;">
+1.02
+</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>#using visualize to display the sampling distribution and mark the confidence interval of the mean temperature 
 visualize(boot_temp_dev) + 
   shade_ci(endpoints = conf_intervals)+ 

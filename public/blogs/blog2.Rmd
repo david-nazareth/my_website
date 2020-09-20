@@ -1,10 +1,11 @@
 ---
 date: "2020-09-16"
-description: How have GDP components changed over time?
+description: How have GDP components changed over time in India, Germany and USA?
 draft: false
 keywords: ""
+image: pic01.png
 slug: blog2
-title: "GDP Components"
+title: "Components of GDP"
 ---
 
 
@@ -40,8 +41,7 @@ library(tidyquant)
 library(openintro)
 
 ```
-
-The main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). You can read more about GDP and the different approaches in calculating at the [Wikipedia GDP page](https://en.wikipedia.org/wiki/Gross_domestic_product).
+In this analysis I will look at how GDP and its components have changed over time for three countries - India, Germany and USA. The main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). 
 
 The GDP data we will look at is from the [United Nations' National Accounts Main Aggregates Database](https://unstats.un.org/unsd/snaama/Downloads), which contains estimates of total GDP and its components for all countries from 1970 to today. We will look at how GDP and its components have changed over time, and compare different countries and how much each component contributes to that country's GDP. 
 
@@ -112,6 +112,7 @@ ggplot(gdp_time, aes(x=year, y=value, color= IndicatorName)) +
 
 ```
 
+The graph above shows the change in the value of GDP components for Germany, India and USA in constant 2010 USD over time. The increase in household expenditure in the USA certainly stands out from the graph above indicating that consumer expenditure has played a significant role in driving the economy of the US forward. Germany and India have also seen their GDP grow over the past 50 years but the increase has been significantly smaller than that of the US economy. We can also see that the German economy has grown on the back of increased exports. It is now the leading exporter of machinery, vehicles and household goods and equipment. We also see that the India has increased its gross capital formation and household expenditure. India is now one of the fastest growing trillion dollar economies in the world. 
 
 Next, I will calculate GDP for all countries in our dataset by adding up the components of GDP i.e personal consumption, business investment, government spending and net exports. To calculate net exports I first have to reshape the data to wide format and create a new column `net_exports` which will be equal to the exports minus the imports. 
 
@@ -192,7 +193,8 @@ favstats(~percentage_difference_in_GDP, data = GDP_Difference)
 ```
 
 From the table above we can see that the median % difference between calculated GDP and actual GDP is very close to 0. 
-Next, let's look at how the proportion of the various components of GDP has changed for India, Germany and the United States. 
+
+Next, let's look at how the proportion of the various components of GDP have changed for India, Germany and the United States. 
 
 ```{r, Proportion_GDP, fig4, fig.width=10, fig.height=6}
 

@@ -5,8 +5,8 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<meta name="description" content="Your description">
-	<meta name="author" content="David Nazareth">
+	
+	
 	<meta name="generator" content="Hugo 0.74.3" />
 	<title>TfL Bike Rentals &middot; David Nazareth</title>
 	<!-- Stylesheets -->
@@ -20,9 +20,6 @@
 	<!-- Custom Fonts -->
 	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-	
-	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-	<link rel="icon" type="image/x-icon" href="/favicon.ico">
 	
 
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -50,6 +47,10 @@
     <nav id="menu">
         <ul class="links">
             
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
 
         </ul>
         <ul class="actions vertical">
@@ -67,6 +68,8 @@
                             <header class="major">
                                 <h1>TfL Bike Rentals</h1>
                             </header>
+                            
+                                <span class="image main"><img src="/img/blogs/pic02.png" alt="" /></span>
                             
                             
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
@@ -169,6 +172,7 @@ ggplot(data=monthly_average, aes(x=month))+
   )</code></pre>
 <p><img src="/blogs/blog1_files/figure-html/weekly%20changes%20in%20TFL%20bike%20rentals,%20fig2-1.png" width="1248" style="display: block; margin: auto;" /></p>
 <p>One can clearly see a drastic decrease in the number of bikes hired from early February, 2020 onwards uptill the beginning of May. From then on, bike rentals have been slightly above the monthly average possibly due to people using them for leisure and as a safer alternative to public transport.</p>
+<p>Next I will compare weekly rentals in 2020 with the expected weekly rentals calculated using data from 2015-2019. The graph below represents the percentage change (positive or negative) from the expected weekly rentals.</p>
 <pre class="r"><code>#calculating expected weekly averages for bike rentals
 weekly_avg &lt;- bike %&gt;% 
   filter(year %in% c(&quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;)) %&gt;% 
@@ -223,6 +227,8 @@ ggplot(weekly_changes)+
   scale_x_continuous(breaks=c(13,26,39,53))+ #setting x-axis breaks
   scale_fill_manual(values=c(&quot;#a1d99b&quot;, &quot;#bd0026&quot;), name=&quot;fill&quot;)</code></pre>
 <p><img src="/blogs/blog1_files/figure-html/weekly%20changes%20in%20TFL%20bike%20rentals,%20fig3-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>The graph above paints a similar picture to that which we saw when we looked at actual vs expected monthly rentals during the pandemic.</p>
+<p>Nobody really knows what the long term effects of the COVID-19 pandemic will be on the mobility patterns of people in cities but I think we can all agree that 2020 has been a very erratic year for public transportation.</p>
 
                         </div>
                     </section>

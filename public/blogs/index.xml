@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Lifestyle on David Nazareth</title>
+    <title>My first steps into the R community on David Nazareth</title>
     <link>/blogs/</link>
-    <description>Recent content in Lifestyle on David Nazareth</description>
+    <description>Recent content in My first steps into the R community on David Nazareth</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate>
@@ -21,22 +21,22 @@
     </item>
     
     <item>
+      <title>Components of GDP</title>
+      <link>/blogs/blog2/</link>
+      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blogs/blog2/</guid>
+      <description>In this analysis I will look at how GDP and its components have changed over time for three countries - India, Germany and USA. The main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports).
+The GDP data we will look at is from the United Nations’ National Accounts Main Aggregates Database, which contains estimates of total GDP and its components for all countries from 1970 to today.</description>
+    </item>
+    
+    <item>
       <title>COVID-19 Death Rate</title>
       <link>/blogs/blog3/</link>
       <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/blogs/blog3/</guid>
       <description>I will now attempt to visualise the death rate of patients from different age groups and genders based on whether they had pre-existing medical conditions or not and on whether they were admitted into the ICU or not. The CDC Covid-19 Case Surveillance Data(https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf) has de-identified patient data on cases recorded in the United States. There are well over 3 million records so I will use the vroom package to load it.</description>
-    </item>
-    
-    <item>
-      <title>GDP Components</title>
-      <link>/blogs/blog2/</link>
-      <pubDate>Wed, 16 Sep 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/blogs/blog2/</guid>
-      <description>The main components of gross domestic product, GDP are personal consumption (C), business investment (I), government spending (G) and net exports (exports - imports). You can read more about GDP and the different approaches in calculating at the Wikipedia GDP page.
-The GDP data we will look at is from the United Nations’ National Accounts Main Aggregates Database, which contains estimates of total GDP and its components for all countries from 1970 to today.</description>
     </item>
     
     <item>

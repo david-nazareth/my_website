@@ -13,7 +13,7 @@ googleAnalytics = ""
 # Enter your disqus shortname to enable comments
 disqusShortname = ""
 
-[params]
+#[params]
   # You can use Markdown syntax for urls [text](//url.to/source)
   # To create multi-line text in strings use the """example Text""" format
   #
@@ -46,13 +46,13 @@ disqusShortname = ""
     # Optional logo as brand stored in img/
     # logo = "logo.png"
 
-    #[[params.navigation.links]]
-      #name = "Home"
-      #url = "#"
+    [[params.navigation.links]]
+      name = "Home"
+      url = "#"
 
-    #[[params.navigation.links]]
-      #name = "Blogs"
-      #url = "blogs"
+    [[params.navigation.links]]
+      name = "Blogs"
+      url = "blogs"
 
     #[[params.navigation.links]]
     #name = "Generic Blog"
@@ -95,8 +95,14 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "GDP Components"
-      subtitle = "How have GDP components changed over time?"
+      title = "Make our Planet Great Again!"
+      subtitle = "Ending the climate change myth"
+      image = "pic05.png"
+      url = "blogs/blog4"
+    
+    [[params.tiles.showcase]]
+      title = "Components of GDP"
+      subtitle = "How have GDP components changed over time in India, Germany and USA?"
       image = "pic01.png"
       url = "blogs/blog2"
 
@@ -112,13 +118,6 @@ disqusShortname = ""
       image = "pic03.png"
       url = "blogs/blog3"
       
-      [[params.tiles.showcase]]
-      title = "Make our Planet Great Again!"
-      subtitle = "Ending the climate change myth"
-      image = "pic05.png"
-      url = "blogs/blog4"
-
-  
 
   [params.blog]
     # All blogs defined in their own files. You can find example blogs
